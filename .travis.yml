@@ -22,3 +22,19 @@ cache:
 env:
   global:
   - secure: iDLrRtJOGoUYiGITlxrSKYSk9UGRauVungTIPgz87O8f0TvZZBCmI/utVcclZD2WEwvaFS7jmRzn4Dk9GXz9DAL/exwiK/+eYIa/I3N46SEV2uE1o+XasIUn2MeuLtbdierbvoN7Gb3wlZ1f9G5n/hkRPi3zbgb6GCkHou4F9o9s/w0iWUfFhHC0sLDbDzk+LsPkAWJzspAkIc8NU7PnAjFzVBqOwS6Rosh2dH1v32z7a/6x7VKGQEgSJxjf+PbKE5l4xoiVpfAdPVIRy492IbAgJsgCxWrTSDnLkeq35KsaZl8Wxc6pRbX+zxHL89mKyu7MXGPE0icoFqytslkH96C/fOCxy00W9Ie/Q/MedFZ+NMnLiLRicvguRvExSQeqIErPS5MVZd8pALuKZVG4dhJTB+08Pq+0p+5XLdjUmaq0HtJThM/Tu99qN/qByeWiFhp7MfsVHc2+EXICL8O6xhMyWcov4LQrE2b1iRI5FjffiZ+RUHwW3aFJct+FovXqIXaLWoH+6Qa6zy1uaQHZq/zniJiV1JHQ8qMvrxP9efJRmv0H05XNU1+rPJo9QmaS27SkBB4FyaoEZZyVY1gegrDG4ytDZQkGp8pZ82RKtGBz146LAK/T8zmdU3GDgBvGc9TpYagzduEsCJWvYynUVFED415WDSIYapNEYa+gtoE=
+
+before_install:
+...
+# Prepare deploy
+  - openssl aes-256-cbc -K $encrypted_xxxxxxx_key -iv $encrypted_xxxxxxxxxxx_iv
+    -in travis_deploy_rsa.enc -out ~\/.ssh/travis_deploy_rsa -d  # Généré par travis encrypt-file
+  - chmod 600 /tmp/travis_deploy_rsa
+  - eval "$(ssh-agent -s)"
+  - ssh-add /tmp/travis_deploy_rsa
+  - echo -e "Host $SERVER_IP_ADDRESS\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
+# Deploy updated container over ssh
+deploy:
+  provider: script
+  script: ssh -i /tmp/travis_deploy_rsa $DEPLOY_USER@$SERVER_HOST "sudo docker pull $IMAGE_NAME:$TAG && sudo docker rm -f app || true && sudo docker run -d --network net -p 80:8080 --name app $IMAGE_NAME:$TAG"
+  on:
+    branch: master
