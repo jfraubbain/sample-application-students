@@ -18,3 +18,11 @@ script:
 cache:
   directories:
   - "$HOME/.m2/repository"
+
+
+# Environment variables are strings (double quotes)
+# Example:
+# - secure: "DpR1th9rZvLMX0......"
+env:
+  global:
+    - secure: 9e0c45fa10947b836ed2c9b2dfcc3e0d95475498
