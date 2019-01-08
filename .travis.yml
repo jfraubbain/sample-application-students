@@ -35,6 +35,6 @@ before_install:
 # Deploy updated container over ssh
 deploy:
   provider: script
-  script: ssh -i /tmp/travis_deploy_rsa $DEPLOY_USER@$SERVER_HOST "sudo docker pull $IMAGE_NAME:$TAG && sudo docker rm -f app || true && sudo docker run -d --network net -p 80:8080 --name app $IMAGE_NAME:$TAG"
+  script: ssh -i /tmp/travis_deploy_rsa $DEPLOY_USER@$SERVER_IP_ADDRESS "sudo docker pull $IMAGE_NAME:$TAG && sudo docker rm -f app || true && sudo docker run -d --network net -p 80:8080 --name app $IMAGE_NAME:$TAG"
   on:
     branch: master
