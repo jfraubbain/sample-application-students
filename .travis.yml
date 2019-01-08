@@ -26,3 +26,13 @@ cache:
 env:
   global:
     - secure: 9e0c45fa10947b836ed2c9b2dfcc3e0d95475498
+
+# The pipe (|) is useful to create multiline scripts
+SONAR_TOKEN=9e0c45fa10947b836ed2c9b2dfcc3e0d95475498
+script:
+  - |
+    mvn clean install sonar:sonar \
+    -Dsonar.projectKey=jfraubbain_sample-application-students \
+    -Dsonar.organization=jfraubbain-github \
+    -Dsonar.host.url=https://sonarcloud.io \
+    -Dsonar.login=9e0c45fa10947b836ed2c9b2dfcc3e0d95475498
